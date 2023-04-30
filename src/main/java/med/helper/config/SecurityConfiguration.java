@@ -9,33 +9,52 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
 @Configuration
-public class SecurityConfiguration {
-//public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+//public class SecurityConfiguration {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailService userDetailService;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+////        http
+////                .csrf().disable()
+////                .authorizeHttpRequests()
+////                .antMatchers("/user/**").authenticated()
+////                .antMatchers("/admin/**").authenticated()
+////                .antMatchers("/register").permitAll()
+////                .and()
+////                .httpBasic()
+////                .and()
+//////                .sessionManagement()
+//////                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//////                .and()
+////                .cors();
 //        http
 //                .csrf().disable()
-//                .authorizeHttpRequests()
-//                .antMatchers("/user/**").authenticated()
-//                .antMatchers("/admin/**").authenticated()
+//                .authorizeRequests()
 //                .antMatchers("/register").permitAll()
+//                .anyRequest().authenticated()
 //                .and()
-//                .httpBasic()
-//                .and()
-////                .sessionManagement()
-////                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-////                .and()
-//                .cors();
+//                .httpBasic();
+//        return http.build();
+//    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
@@ -43,18 +62,17 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
-        return http.build();
     }
 
-    //    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
+//
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new CustomUserDetailService();
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
