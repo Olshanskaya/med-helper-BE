@@ -5,6 +5,13 @@ import med.helper.entitys.User;
 import med.helper.model.UserModel;
 import med.helper.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +19,13 @@ import org.springframework.web.bind.annotation.*;
 public class SimpleController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder bcryptEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping(value = "/register")
     public User register(@RequestBody UserModel userModel) {
@@ -26,12 +36,19 @@ public class SimpleController {
         return userRepository.save(newUser);
     }
 
-    @GetMapping(value = "/login/{id}")
-    public MedicineDto getTestData(@PathVariable Integer id) {
-        MedicineDto m = new MedicineDto();
-        m.setName("login");
-        m.setId(id);
-        return m;
+    @PostMapping(value = "/login")
+    public ResponseEntity<HttpStatus> login(@RequestBody UserModel userModel) throws Exception {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userModel.getEmail(), userModel.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (BadCredentialsException e) {
+            throw new Exception("invalid creds");
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/admin/{id}")
