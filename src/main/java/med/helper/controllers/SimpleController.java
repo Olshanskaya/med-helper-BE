@@ -31,13 +31,13 @@ public class SimpleController {
     public User register(@RequestBody UserModel userModel) {
         User newUser = new User();
         newUser.setEmail(userModel.getEmail());
-        newUser.setRole(userModel.getRole());
+        newUser.setAuthority(userModel.getAuthority());
         newUser.setPassword(bcryptEncoder.encode(userModel.getPassword()));
         return userRepository.save(newUser);
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody UserModel userModel) throws Exception {
+    public User login(@RequestBody UserModel userModel) throws Exception {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -48,7 +48,7 @@ public class SimpleController {
         } catch (BadCredentialsException e) {
             throw new Exception("invalid creds");
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return userRepository.findByEmail(userModel.getEmail()).get();
     }
 
     @GetMapping(value = "/admin/{id}")
