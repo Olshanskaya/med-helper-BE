@@ -10,6 +10,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,5 +35,13 @@ public class User {
     @OneToOne
     @JoinColumn(name = "authority_id")
     private Authority authority;
+
+    @ManyToMany
+//    @JoinTable(
+//            name = "UserPatient",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "patient_id")
+//    )
+    private Set<Patient> patients;
 
 }
