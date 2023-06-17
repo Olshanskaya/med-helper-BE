@@ -19,4 +19,6 @@ public class ActiveSubstance {
     private Long id;
 
     private String name;
+
+    private String status;
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import med.helper.enums.ElementStatus;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -43,5 +44,7 @@ public class User {
 //            inverseJoinColumns = @JoinColumn(name = "patient_id")
 //    )
     private Set<Patient> patients;
+
+    private String status;
 
 }

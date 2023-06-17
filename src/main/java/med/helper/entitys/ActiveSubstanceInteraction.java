@@ -18,7 +18,7 @@ import java.util.Set;
 public class ActiveSubstanceInteraction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
@@ -31,4 +31,6 @@ public class ActiveSubstanceInteraction {
 
     @Temporal(TemporalType.TIME)
     Date interactionTime;
+
+    private String status;
 }

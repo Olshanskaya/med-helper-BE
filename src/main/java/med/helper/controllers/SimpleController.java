@@ -2,6 +2,7 @@ package med.helper.controllers;
 
 import med.helper.dtos.MedicineDto;
 import med.helper.entitys.User;
+import med.helper.enums.ElementStatus;
 import med.helper.model.UserModel;
 import med.helper.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class SimpleController {
         newUser.setEmail(userModel.getEmail());
         newUser.setAuthority(userModel.getAuthority());
         newUser.setPassword(bcryptEncoder.encode(userModel.getPassword()));
+        newUser.setStatus(ElementStatus.ACTIVE.getName());
         return userRepository.save(newUser);
     }
 

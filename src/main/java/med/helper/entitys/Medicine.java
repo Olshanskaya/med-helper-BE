@@ -22,4 +22,6 @@ public class Medicine {
 
     @OneToOne
     private ActiveSubstance activeSubstance;
+
+    private String status;
 }

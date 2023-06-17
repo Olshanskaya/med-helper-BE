@@ -6,4 +6,8 @@ import lombok.Data;
 public class MedicineDto {
     String name;
     Integer id;
+
+    ActiveSubstanceDto activeSubstanceDto;
+
+    private String status;
 }
