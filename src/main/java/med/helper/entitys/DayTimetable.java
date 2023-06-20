@@ -24,4 +24,6 @@ public class DayTimetable {
 
     @Temporal(TemporalType.TIME)
     Date medTime;
+
+    private String status;
 }

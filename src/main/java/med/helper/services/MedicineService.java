@@ -55,7 +55,7 @@ public class MedicineService {
         Optional<ActiveSubstance> as = activeSubstanceRepository.findById(newMedicineDto.getActiveSubstanceId());
         medicine.setActiveSubstance(as.get());
         Medicine savedMed = medicineRepository.save(medicine);
-        return Optional.of(modelMapper.map(savedMed, MedicineDto.class));
+        return Optional.ofNullable(modelMapper.map(savedMed, MedicineDto.class));
     }
 
     public boolean deactivateMed(long medID) {
@@ -81,6 +81,6 @@ public class MedicineService {
         Optional<ActiveSubstance> as = activeSubstanceRepository.findById(newMedicineDto.getActiveSubstanceId());
         medicine.setActiveSubstance(as.get());
         Medicine savedMed = medicineRepository.save(medicine);
-        return Optional.of(modelMapper.map(savedMed, MedicineDto.class));
+        return Optional.ofNullable(modelMapper.map(savedMed, MedicineDto.class));
     }
 }

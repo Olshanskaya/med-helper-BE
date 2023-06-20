@@ -26,4 +26,9 @@ public class Timetable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Long dayDuration;
+
+    private Long timePerDay;
+
+    @OneToOne
+    private Medicine medicine;
 }

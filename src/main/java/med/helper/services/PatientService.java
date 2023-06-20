@@ -25,10 +25,15 @@ public class PatientService {
 
 
     public List<PatientDto> getAllPatientsByUserID(Long id) {
+        Optional<User> ou = userRepository.findById(id);
+        if (ou.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        Set<Patient> dtos = userRepository.findById(id)
-                .get()
-                .getPatients();
+        Set<Patient> dtos = ou.get().getPatients();
+        if (dtos.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         return dtos
                 .stream()
