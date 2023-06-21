@@ -6,6 +6,8 @@ import med.helper.entitys.ActiveSubstanceInteraction;
 import med.helper.enums.ElementStatus;
 import med.helper.repository.ActiveSubstanceInteractionRepository;
 import med.helper.repository.ActiveSubstanceRepository;
+import med.helper.repository.PatientRepository;
+import med.helper.repository.TimetableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,14 +31,18 @@ public class ActiveSubstanceServiceTest {
     @MockBean
     private ActiveSubstanceRepository activeSubstanceRepository;
     @MockBean
+    private TimetableRepository timetableRepository;
+    @MockBean
     private ActiveSubstanceInteractionRepository activeSubstanceInteractionRepository;
+    @MockBean
+    private PatientRepository patientRepository;
 
     private ModelMapper modelMapper;
 
     @BeforeEach
     public void setup() {
         modelMapper = new ModelMapper();
-        activeSubstanceService = new ActiveSubstanceService(activeSubstanceRepository, activeSubstanceInteractionRepository, modelMapper);
+        activeSubstanceService = new ActiveSubstanceService(activeSubstanceRepository, activeSubstanceInteractionRepository, timetableRepository,patientRepository, modelMapper);
     }
 
     @Test

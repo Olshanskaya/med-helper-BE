@@ -2,18 +2,16 @@ package med.helper.services;
 
 import lombok.AllArgsConstructor;
 import med.helper.dtos.*;
-import med.helper.entitys.ActiveSubstance;
-import med.helper.entitys.ActiveSubstanceInteraction;
-import med.helper.entitys.Medicine;
+import med.helper.entitys.*;
 import med.helper.enums.ElementStatus;
-import med.helper.repository.ActiveSubstanceInteractionRepository;
-import med.helper.repository.ActiveSubstanceRepository;
-import med.helper.repository.MedicineRepository;
+import med.helper.repository.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +22,10 @@ public class ActiveSubstanceService {
 
     ActiveSubstanceRepository activeSubstanceRepository;
     ActiveSubstanceInteractionRepository activeSubstanceInteractionRepository;
+
+    TimetableRepository timetableRepository;
+
+    PatientRepository patientRepository;
     ModelMapper modelMapper;
 
 
@@ -128,5 +130,27 @@ public class ActiveSubstanceService {
             }
         }
         return true;
+    }
+
+
+    public ResponseEntity<String> isMedsCombinationOk(Long patient_id, String as_name) {
+        Optional<ActiveSubstance> as1 = activeSubstanceRepository.findByName(as_name);
+        Set<Timetable> timetables = timetableRepository.findAllByPatientId(patient_id);
+        if(timetables.isEmpty()) {
+            return ResponseEntity.ok("ok");
+        }
+        //List<ActiveSubstanceInteraction> list = activeSubstanceInteractionRepository.findByActiveSubstance1(as1.get());
+        for (Timetable t: timetables) {
+            ActiveSubstance a = t.getMedicine().getActiveSubstance();
+            List<ActiveSubstanceInteraction> list = activeSubstanceInteractionRepository.findByActiveSubstance1(a);
+            if (list.isEmpty()) {
+               continue;
+            }
+            for (ActiveSubstanceInteraction l: list) {
+                if(Objects.equals(l.getActiveSubstance2().getName(), as_name) && l.getInteractionTime()==null)
+                    return ResponseEntity.ok("not");
+            }
+        }
+        return ResponseEntity.ok("ok");
     }
 }

@@ -12,6 +12,7 @@ import med.helper.repository.ActiveSubstanceRepository;
 import med.helper.repository.MedicineRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -83,4 +84,5 @@ public class MedicineService {
         Medicine savedMed = medicineRepository.save(medicine);
         return Optional.ofNullable(modelMapper.map(savedMed, MedicineDto.class));
     }
+
 }

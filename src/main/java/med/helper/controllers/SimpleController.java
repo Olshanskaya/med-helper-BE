@@ -5,6 +5,8 @@ import med.helper.entitys.User;
 import med.helper.enums.ElementStatus;
 import med.helper.model.UserModel;
 import med.helper.repository.UserRepository;
+import med.helper.services.EmailService;
+import med.helper.services.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +22,8 @@ public class SimpleController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private PasswordEncoder bcryptEncoder;
@@ -29,10 +33,12 @@ public class SimpleController {
 
     @PostMapping(value = "/register")
     public User register(@RequestBody UserModel userModel) {
+        String password = PasswordGenerator.generatePassword(10);
         User newUser = new User();
         newUser.setEmail(userModel.getEmail());
         newUser.setAuthority(userModel.getAuthority());
-        newUser.setPassword(bcryptEncoder.encode(userModel.getPassword()));
+        newUser.setPassword(bcryptEncoder.encode(password));
+        emailService.sendSimpleMessage(password, newUser.getEmail(), newUser.getAuthority().getAuthority());
         newUser.setStatus(ElementStatus.ACTIVE.getName());
         return userRepository.save(newUser);
     }

@@ -45,5 +45,10 @@ public class ActiveSubstanceController {
         return ResponseEntity.of(activeSubstanceService.addNewSubInteraction(dtos));
     }
 
+    @GetMapping(value = "/user/activsub/conflict/{patient_id}/{as_name}")
+    public ResponseEntity<String> isCombinationOk(@PathVariable(required = true, name = "patient_id") String patient_id, @PathVariable(required = true, name = "as_name") String as_name) {
+        return activeSubstanceService.isMedsCombinationOk(Long.parseLong(patient_id), as_name);
+    }
+
 
 }

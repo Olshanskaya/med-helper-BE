@@ -1,0 +1,189 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MedicineService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">med.helper.services</a>
+</div>
+
+<h1>Coverage Summary for Class: MedicineService (med.helper.services)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MedicineService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,8%
+  </span>
+  <span class="absValue">
+    (1/36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package med.helper.services;
+&nbsp;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import med.helper.dtos.MedicineDto;
+&nbsp;import med.helper.dtos.NewMedicineDto;
+&nbsp;import med.helper.dtos.UpdateMedicineDto;
+&nbsp;import med.helper.entitys.ActiveSubstance;
+&nbsp;import med.helper.entitys.Medicine;
+&nbsp;import med.helper.entitys.User;
+&nbsp;import med.helper.enums.ElementStatus;
+&nbsp;import med.helper.repository.ActiveSubstanceRepository;
+&nbsp;import med.helper.repository.MedicineRepository;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.modelmapper.convention.MatchingStrategies;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.Set;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+&nbsp;public class MedicineService {
+&nbsp;
+&nbsp;    MedicineRepository medicineRepository;
+&nbsp;    ModelMapper modelMapper;
+&nbsp;
+&nbsp;    ActiveSubstanceRepository activeSubstanceRepository;
+&nbsp;
+&nbsp;
+&nbsp;    public Set&lt;MedicineDto&gt; getAllMeds() {
+&nbsp;
+<b class="nc">&nbsp;        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Medicine&gt; dtos = medicineRepository.findAll();</b>
+&nbsp;
+<b class="nc">&nbsp;        return dtos</b>
+<b class="nc">&nbsp;                .stream()</b>
+<b class="nc">&nbsp;                .filter(p -&gt; p.getStatus().equals(ElementStatus.ACTIVE.getName()))</b>
+<b class="nc">&nbsp;                .map(p -&gt; modelMapper.map(p, MedicineDto.class))</b>
+<b class="nc">&nbsp;                .collect(Collectors.toSet());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;MedicineDto&gt; addNewMed(NewMedicineDto newMedicineDto) {
+<b class="nc">&nbsp;        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);</b>
+&nbsp;        //medicineRepository.save(modelMapper.map(newMedicineDto, Medicine.class));
+<b class="nc">&nbsp;        Optional&lt;Medicine&gt; m = medicineRepository.findByName(newMedicineDto.getName());</b>
+<b class="nc">&nbsp;        if (m.isPresent() &amp;&amp; m.get().getStatus().equals(ElementStatus.ACTIVE.getName())) {</b>
+<b class="nc">&nbsp;            return Optional.of(new MedicineDto());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Medicine medicine = new Medicine();</b>
+<b class="nc">&nbsp;        medicine.setName(newMedicineDto.getName());</b>
+<b class="nc">&nbsp;        medicine.setStatus(ElementStatus.ACTIVE.getName());</b>
+<b class="nc">&nbsp;        Optional&lt;ActiveSubstance&gt; as = activeSubstanceRepository.findById(newMedicineDto.getActiveSubstanceId());</b>
+<b class="nc">&nbsp;        medicine.setActiveSubstance(as.get());</b>
+<b class="nc">&nbsp;        Medicine savedMed = medicineRepository.save(medicine);</b>
+<b class="nc">&nbsp;        return Optional.of(modelMapper.map(savedMed, MedicineDto.class));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean deactivateMed(long medID) {
+<b class="nc">&nbsp;        Optional&lt;Medicine&gt; ap = medicineRepository.findById(medID);</b>
+<b class="nc">&nbsp;        if (ap.isPresent()) {</b>
+<b class="nc">&nbsp;            Medicine c = ap.get();</b>
+<b class="nc">&nbsp;            c.setStatus(ElementStatus.DELETED.getName());</b>
+<b class="nc">&nbsp;            medicineRepository.save(c);</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;MedicineDto&gt; editNewMed(NewMedicineDto newMedicineDto, Long id) {
+<b class="nc">&nbsp;        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);</b>
+&nbsp;
+<b class="nc">&nbsp;        Optional&lt;Medicine&gt; m = medicineRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (m.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Optional.of(new MedicineDto());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Medicine medicine = m.get();</b>
+<b class="nc">&nbsp;        medicine.setName(newMedicineDto.getName());</b>
+<b class="nc">&nbsp;        Optional&lt;ActiveSubstance&gt; as = activeSubstanceRepository.findById(newMedicineDto.getActiveSubstanceId());</b>
+<b class="nc">&nbsp;        medicine.setActiveSubstance(as.get());</b>
+<b class="nc">&nbsp;        Medicine savedMed = medicineRepository.save(medicine);</b>
+<b class="nc">&nbsp;        return Optional.of(modelMapper.map(savedMed, MedicineDto.class));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-06-18 18:51</div>
+</div>
+</body>
+</html>

@@ -43,4 +43,5 @@ public class MedicineController {
     public ResponseEntity<MedicineDto> editNewMed(@RequestBody NewMedicineDto newMedicineDto, @PathVariable(required = true, name = "id") String id) {
         return ResponseEntity.of(medicineService.editNewMed(newMedicineDto, Long.parseLong(id)));
     }
+
 }
