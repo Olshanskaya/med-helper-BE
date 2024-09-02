@@ -4,4 +4,5 @@ This project focuses on the development of a mobile application designed to sche
 
 The frontend of the app, built on React Bootstrap, is a website specifically designed for administrators. This tool offers effective options for managing a database of medications, including active ingredients and their interactions with each other. Administrators can customize and update medication data, as well as control drug interactions, thereby ensuring the safety and effectiveness of medication administration for the users of the app.
 
+Android App: https://github.com/Olshanskaya/med-helper-android-app
 FE: https://github.com/Olshanskaya/med-helper-FE
